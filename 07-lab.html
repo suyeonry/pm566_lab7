@@ -439,7 +439,7 @@ stringr::str_extract(counts, &quot;[0-9,]+&quot;)</code></pre>
 
 query_ids</code></pre>
 <pre><code>## Response [https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&amp;term=covid19%20hawaii&amp;retmax=1000]
-##   Date: 2020-09-30 22:58
+##   Date: 2020-09-30 23:06
 ##   Status: 200
 ##   Content-Type: text/xml; charset=UTF-8
 ##   Size: 2.34 kB
@@ -600,9 +600,13 @@ ids</code></pre>
 </ol>
 <p><strong>Pro-tip</strong>: If you want <code>GET()</code> to take some element literal, wrap it around <code>I()</code> (as you would do in a formula in R). For example, the text <code>&quot;123,456&quot;</code> is replaced with <code>&quot;123%2C456&quot;</code>. If you don’t want that behavior, you would need to do the following <code>I(&quot;123,456&quot;)</code>.</p>
 <pre class="r"><code>publications &lt;- GET(
-  url   = &quot;BASELINE URL HERE&quot;,
+  url   = &quot;https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi&quot;,
   query = list(
-    &quot;PARAMETERS OF THE QUERY&quot;
+      db = &quot;pubmed&quot;,
+      id = paste(ids, collapse = &quot;,&quot;),
+      retmax = 1000,
+      rettype = &quot;abstract&quot;
+    
     )
 )
 
