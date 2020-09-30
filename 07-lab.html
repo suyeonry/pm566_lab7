@@ -426,14 +426,46 @@ stringr::str_extract(counts, &quot;[0-9,]+&quot;)</code></pre>
 <li>retmax: 1000</li>
 </ul></li>
 </ol>
-<pre class="r"><code>library(httr)
-query_ids &lt;- GET(
-  url   = &quot;BASELINE URL&quot;,
-  query = list(&quot;QUERY PARAMETERS&quot;)
+<pre class="r"><code>library(httr)</code></pre>
+<pre><code>## Warning: package &#39;httr&#39; was built under R version 3.6.3</code></pre>
+<pre class="r"><code>query_ids &lt;- GET(
+  url   = &quot;https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi&quot;,
+  query = list(
+    db =&quot;pubmed&quot;,
+    term = &quot;covid19 hawaii&quot;,
+    retmax = 1000
+               )
 )
 
-# Extracting the content of the response of GET
-ids &lt;- httr::content(query_ids)</code></pre>
+query_ids</code></pre>
+<pre><code>## Response [https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&amp;term=covid19%20hawaii&amp;retmax=1000]
+##   Date: 2020-09-30 22:58
+##   Status: 200
+##   Content-Type: text/xml; charset=UTF-8
+##   Size: 2.34 kB
+## &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+## &lt;!DOCTYPE eSearchResult PUBLIC &quot;-//NLM//DTD esearch 20060628//EN&quot; &quot;https...
+## &lt;eSearchResult&gt;&lt;Count&gt;40&lt;/Count&gt;&lt;RetMax&gt;40&lt;/RetMax&gt;&lt;RetStart&gt;0&lt;/RetStart...
+## &lt;Id&gt;32984015&lt;/Id&gt;
+## &lt;Id&gt;32969950&lt;/Id&gt;
+## &lt;Id&gt;32921878&lt;/Id&gt;
+## &lt;Id&gt;32914097&lt;/Id&gt;
+## &lt;Id&gt;32914093&lt;/Id&gt;
+## &lt;Id&gt;32912595&lt;/Id&gt;
+## &lt;Id&gt;32907823&lt;/Id&gt;
+## ...</code></pre>
+<pre class="r"><code># Extracting the content of the response of GET
+ids &lt;- httr::content(query_ids)
+ids</code></pre>
+<pre><code>## {xml_document}
+## &lt;eSearchResult&gt;
+## [1] &lt;Count&gt;40&lt;/Count&gt;
+## [2] &lt;RetMax&gt;40&lt;/RetMax&gt;
+## [3] &lt;RetStart&gt;0&lt;/RetStart&gt;
+## [4] &lt;IdList&gt;\n  &lt;Id&gt;32984015&lt;/Id&gt;\n  &lt;Id&gt;32969950&lt;/Id&gt;\n  &lt;Id&gt;32921878&lt;/ ...
+## [5] &lt;TranslationSet&gt;\n  &lt;Translation&gt;\n    &lt;From&gt;covid19&lt;/From&gt;\n    &lt;To ...
+## [6] &lt;TranslationStack&gt;\n  &lt;TermSet&gt;\n    &lt;Term&gt;&quot;COVID-19&quot;[Supplementary  ...
+## [7] &lt;QueryTranslation&gt;(&quot;COVID-19&quot;[Supplementary Concept] OR &quot;COVID-19&quot;[A ...</code></pre>
 <p>The query will return an XML object, we can turn it into a character list to analyze the text directly with <code>as.character()</code>. Another way of processing the data could be using lists with the function <code>xml2::as_list()</code>. We will skip the latter for now.</p>
 <p>Take a look at the data, and continue with the next question (don’t forget to commit and push your results to your GitHub repo!).</p>
 </div>
@@ -442,12 +474,119 @@ ids &lt;- httr::content(query_ids)</code></pre>
 <p>The Ids are wrapped around text in the following way: <code>&lt;Id&gt;... id number ...&lt;/Id&gt;</code>. we can use a regular expression that extract that information. Fill out the following lines of code:</p>
 <pre class="r"><code># Turn the result into a character vector
 ids &lt;- as.character(ids)
-
-# Find all the ids 
-ids &lt;- stringr::str_extract_all(ids, &quot;PATTERN&quot;)[[1]]
+cat(ids)</code></pre>
+<pre><code>## &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+## &lt;!DOCTYPE eSearchResult PUBLIC &quot;-//NLM//DTD esearch 20060628//EN&quot; &quot;https://eutils.ncbi.nlm.nih.gov/eutils/dtd/20060628/esearch.dtd&quot;&gt;
+## &lt;eSearchResult&gt;
+##   &lt;Count&gt;40&lt;/Count&gt;
+##   &lt;RetMax&gt;40&lt;/RetMax&gt;
+##   &lt;RetStart&gt;0&lt;/RetStart&gt;
+##   &lt;IdList&gt;
+##     &lt;Id&gt;32984015&lt;/Id&gt;
+##     &lt;Id&gt;32969950&lt;/Id&gt;
+##     &lt;Id&gt;32921878&lt;/Id&gt;
+##     &lt;Id&gt;32914097&lt;/Id&gt;
+##     &lt;Id&gt;32914093&lt;/Id&gt;
+##     &lt;Id&gt;32912595&lt;/Id&gt;
+##     &lt;Id&gt;32907823&lt;/Id&gt;
+##     &lt;Id&gt;32907673&lt;/Id&gt;
+##     &lt;Id&gt;32888905&lt;/Id&gt;
+##     &lt;Id&gt;32881116&lt;/Id&gt;
+##     &lt;Id&gt;32837709&lt;/Id&gt;
+##     &lt;Id&gt;32763956&lt;/Id&gt;
+##     &lt;Id&gt;32763350&lt;/Id&gt;
+##     &lt;Id&gt;32745072&lt;/Id&gt;
+##     &lt;Id&gt;32742897&lt;/Id&gt;
+##     &lt;Id&gt;32692706&lt;/Id&gt;
+##     &lt;Id&gt;32690354&lt;/Id&gt;
+##     &lt;Id&gt;32680824&lt;/Id&gt;
+##     &lt;Id&gt;32666058&lt;/Id&gt;
+##     &lt;Id&gt;32649272&lt;/Id&gt;
+##     &lt;Id&gt;32596689&lt;/Id&gt;
+##     &lt;Id&gt;32592394&lt;/Id&gt;
+##     &lt;Id&gt;32584245&lt;/Id&gt;
+##     &lt;Id&gt;32501143&lt;/Id&gt;
+##     &lt;Id&gt;32486844&lt;/Id&gt;
+##     &lt;Id&gt;32462545&lt;/Id&gt;
+##     &lt;Id&gt;32432219&lt;/Id&gt;
+##     &lt;Id&gt;32432218&lt;/Id&gt;
+##     &lt;Id&gt;32432217&lt;/Id&gt;
+##     &lt;Id&gt;32427288&lt;/Id&gt;
+##     &lt;Id&gt;32420720&lt;/Id&gt;
+##     &lt;Id&gt;32386898&lt;/Id&gt;
+##     &lt;Id&gt;32371624&lt;/Id&gt;
+##     &lt;Id&gt;32371551&lt;/Id&gt;
+##     &lt;Id&gt;32361738&lt;/Id&gt;
+##     &lt;Id&gt;32326959&lt;/Id&gt;
+##     &lt;Id&gt;32323016&lt;/Id&gt;
+##     &lt;Id&gt;32314954&lt;/Id&gt;
+##     &lt;Id&gt;32300051&lt;/Id&gt;
+##     &lt;Id&gt;32259247&lt;/Id&gt;
+##   &lt;/IdList&gt;
+##   &lt;TranslationSet&gt;
+##     &lt;Translation&gt;
+##       &lt;From&gt;covid19&lt;/From&gt;
+##       &lt;To&gt;&quot;COVID-19&quot;[Supplementary Concept] OR &quot;COVID-19&quot;[All Fields] OR &quot;covid19&quot;[All Fields]&lt;/To&gt;
+##     &lt;/Translation&gt;
+##     &lt;Translation&gt;
+##       &lt;From&gt;hawaii&lt;/From&gt;
+##       &lt;To&gt;&quot;hawaii&quot;[MeSH Terms] OR &quot;hawaii&quot;[All Fields]&lt;/To&gt;
+##     &lt;/Translation&gt;
+##   &lt;/TranslationSet&gt;
+##   &lt;TranslationStack&gt;
+##     &lt;TermSet&gt;
+##       &lt;Term&gt;&quot;COVID-19&quot;[Supplementary Concept]&lt;/Term&gt;
+##       &lt;Field&gt;Supplementary Concept&lt;/Field&gt;
+##       &lt;Count&gt;27206&lt;/Count&gt;
+##       &lt;Explode&gt;N&lt;/Explode&gt;
+##     &lt;/TermSet&gt;
+##     &lt;TermSet&gt;
+##       &lt;Term&gt;&quot;COVID-19&quot;[All Fields]&lt;/Term&gt;
+##       &lt;Field&gt;All Fields&lt;/Field&gt;
+##       &lt;Count&gt;55053&lt;/Count&gt;
+##       &lt;Explode&gt;N&lt;/Explode&gt;
+##     &lt;/TermSet&gt;
+##     &lt;OP&gt;OR&lt;/OP&gt;
+##     &lt;TermSet&gt;
+##       &lt;Term&gt;&quot;covid19&quot;[All Fields]&lt;/Term&gt;
+##       &lt;Field&gt;All Fields&lt;/Field&gt;
+##       &lt;Count&gt;794&lt;/Count&gt;
+##       &lt;Explode&gt;N&lt;/Explode&gt;
+##     &lt;/TermSet&gt;
+##     &lt;OP&gt;OR&lt;/OP&gt;
+##     &lt;OP&gt;GROUP&lt;/OP&gt;
+##     &lt;TermSet&gt;
+##       &lt;Term&gt;&quot;hawaii&quot;[MeSH Terms]&lt;/Term&gt;
+##       &lt;Field&gt;MeSH Terms&lt;/Field&gt;
+##       &lt;Count&gt;7799&lt;/Count&gt;
+##       &lt;Explode&gt;Y&lt;/Explode&gt;
+##     &lt;/TermSet&gt;
+##     &lt;TermSet&gt;
+##       &lt;Term&gt;&quot;hawaii&quot;[All Fields]&lt;/Term&gt;
+##       &lt;Field&gt;All Fields&lt;/Field&gt;
+##       &lt;Count&gt;27601&lt;/Count&gt;
+##       &lt;Explode&gt;N&lt;/Explode&gt;
+##     &lt;/TermSet&gt;
+##     &lt;OP&gt;OR&lt;/OP&gt;
+##     &lt;OP&gt;GROUP&lt;/OP&gt;
+##     &lt;OP&gt;AND&lt;/OP&gt;
+##     &lt;OP&gt;GROUP&lt;/OP&gt;
+##   &lt;/TranslationStack&gt;
+##   &lt;QueryTranslation&gt;(&quot;COVID-19&quot;[Supplementary Concept] OR &quot;COVID-19&quot;[All Fields] OR &quot;covid19&quot;[All Fields]) AND (&quot;hawaii&quot;[MeSH Terms] OR &quot;hawaii&quot;[All Fields])&lt;/QueryTranslation&gt;
+## &lt;/eSearchResult&gt;</code></pre>
+<pre class="r"><code># Find all the ids 
+ids &lt;- stringr::str_extract_all(ids,&quot;&lt;Id&gt;[0-9]+&lt;/Id&gt;&quot;)[[1]]
 
 # Remove all the leading and trailing &lt;Id&gt; &lt;/Id&gt;. Make use of &quot;|&quot;
-ids &lt;- stringr::str_remove_all(ids, &quot;PATTERN&quot;)</code></pre>
+ids &lt;- stringr::str_remove_all(ids, &quot;&lt;Id&gt;|&lt;/Id&gt;&quot;)
+ids</code></pre>
+<pre><code>##  [1] &quot;32984015&quot; &quot;32969950&quot; &quot;32921878&quot; &quot;32914097&quot; &quot;32914093&quot; &quot;32912595&quot;
+##  [7] &quot;32907823&quot; &quot;32907673&quot; &quot;32888905&quot; &quot;32881116&quot; &quot;32837709&quot; &quot;32763956&quot;
+## [13] &quot;32763350&quot; &quot;32745072&quot; &quot;32742897&quot; &quot;32692706&quot; &quot;32690354&quot; &quot;32680824&quot;
+## [19] &quot;32666058&quot; &quot;32649272&quot; &quot;32596689&quot; &quot;32592394&quot; &quot;32584245&quot; &quot;32501143&quot;
+## [25] &quot;32486844&quot; &quot;32462545&quot; &quot;32432219&quot; &quot;32432218&quot; &quot;32432217&quot; &quot;32427288&quot;
+## [31] &quot;32420720&quot; &quot;32386898&quot; &quot;32371624&quot; &quot;32371551&quot; &quot;32361738&quot; &quot;32326959&quot;
+## [37] &quot;32323016&quot; &quot;32314954&quot; &quot;32300051&quot; &quot;32259247&quot;</code></pre>
 <p>With the ids in hand, we can now try to get the abstracts of the papers. As before, we will need to coerce the contents (results) to a list using:</p>
 <ol style="list-style-type: decimal">
 <li><p>Baseline url: <a href="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" class="uri">https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi</a></p></li>

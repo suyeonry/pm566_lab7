@@ -69,15 +69,25 @@ Use the function `httr::GET()` to make the following query:
     - retmax: 1000
 
 
-```{r papers-covid-hawaii, eval=FALSE}
+```{r papers-covid-hawaii, eval=TRUE}
 library(httr)
 query_ids <- GET(
-  url   = "BASELINE URL",
-  query = list("QUERY PARAMETERS")
+  url   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi",
+  query = list(
+    db ="pubmed",
+    term = "covid19 hawaii",
+    retmax = 1000
+               )
 )
+
+query_ids
 
 # Extracting the content of the response of GET
 ids <- httr::content(query_ids)
+ids
+
+
+
 ```
 
 The query will return an XML object, we can turn it into a character list to
@@ -94,15 +104,16 @@ The Ids are wrapped around text in the following way: `<Id>... id number ...</Id
 we can use a regular expression that extract that information. Fill out the
 following lines of code:
 
-```{r get-ids, eval = FALSE}
+```{r get-ids, eval = TRUE}
 # Turn the result into a character vector
 ids <- as.character(ids)
-
+cat(ids)
 # Find all the ids 
-ids <- stringr::str_extract_all(ids, "PATTERN")[[1]]
+ids <- stringr::str_extract_all(ids,"<Id>[0-9]+</Id>")[[1]]
 
 # Remove all the leading and trailing <Id> </Id>. Make use of "|"
-ids <- stringr::str_remove_all(ids, "PATTERN")
+ids <- stringr::str_remove_all(ids, "<Id>|</Id>")
+ids
 ```
 
 With the ids in hand, we can now try to get the abstracts of the papers. As
