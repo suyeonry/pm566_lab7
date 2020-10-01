@@ -439,7 +439,7 @@ stringr::str_extract(counts, &quot;[0-9,]+&quot;)</code></pre>
 
 query_ids</code></pre>
 <pre><code>## Response [https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&amp;term=covid19%20hawaii&amp;retmax=1000]
-##   Date: 2020-09-30 23:06
+##   Date: 2020-10-01 01:25
 ##   Status: 200
 ##   Content-Type: text/xml; charset=UTF-8
 ##   Size: 2.34 kB
@@ -623,12 +623,70 @@ publications_txt &lt;- as.character(publications)</code></pre>
 <li>… Institute of …</li>
 </ol>
 <p>Write a regular expression that captures all such instances</p>
-<pre class="r"><code>institution &lt;- str_extract_all(
+<pre class="r"><code>library(stringr)
+institution &lt;- str_extract_all(
   publications_txt,
-  &quot;[YOUR REGULAR EXPRESSION HERE]&quot;
+  &quot;University\\s+of\\s+[[:alpha:]]+|[[:alpha:]]+\\s+Institute\\s+of\\s+[[:alpha:]]+&quot;
   ) 
 institution &lt;- unlist(institution)
 table(institution)</code></pre>
+<pre><code>## institution
+##      Australian Institute of Tropical 
+##                                     9 
+## Massachusetts Institute of Technology 
+##                                     1 
+##   National Institute of Environmental 
+##                                     3 
+##    Prophylactic Institute of Southern 
+##                                     2 
+##                 University of Arizona 
+##                                     2 
+##              University of California 
+##                                     6 
+##                 University of Chicago 
+##                                     1 
+##                University of Colorado 
+##                                     1 
+##                   University of Hawai 
+##                                    20 
+##                  University of Hawaii 
+##                                    38 
+##                  University of Health 
+##                                     1 
+##                University of Illinois 
+##                                     1 
+##                    University of Iowa 
+##                                     4 
+##                University of Lausanne 
+##                                     1 
+##              University of Louisville 
+##                                     1 
+##                University of Nebraska 
+##                                     5 
+##                  University of Nevada 
+##                                     1 
+##                     University of New 
+##                                     2 
+##            University of Pennsylvania 
+##                                    18 
+##              University of Pittsburgh 
+##                                     5 
+##                 University of Science 
+##                                    14 
+##                   University of South 
+##                                     1 
+##                University of Southern 
+##                                     1 
+##                  University of Sydney 
+##                                     1 
+##                   University of Texas 
+##                                     5 
+##                     University of the 
+##                                     1 
+##                    University of Utah 
+##                                     2 
+##               University of Wisconsin 
+##                                     3</code></pre>
 <p>Repeat the exercise and this time focus on schools and departments in the form of</p>
 <ol style="list-style-type: decimal">
 <li>School of …</li>
@@ -636,10 +694,16 @@ table(institution)</code></pre>
 </ol>
 <p>And tabulate the results</p>
 <pre class="r"><code>schools_and_deps &lt;- str_extract_all(
-  abstracts_txt,
-  &quot;[YOUR REGULAR EXPRESSION HERE]&quot;
-  )
-table(schools_and_deps)</code></pre>
+  publications_txt,
+  &quot;School\\s+of\\s+[[:alpha:]]+|Department\\s+of+[[:alpha:]]+&quot;
+  ) 
+
+table(unlist(schools_and_deps))</code></pre>
+<pre><code>## 
+## School of Medicine  School of Natural  School of Nursing 
+##                 87                  1                  1 
+##   School of Public   School of Social 
+##                 20                  1</code></pre>
 </div>
 <div id="question-5-form-a-database" class="section level2">
 <h2>Question 5: Form a database</h2>
