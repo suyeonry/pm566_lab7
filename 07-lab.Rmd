@@ -203,7 +203,7 @@ Now, extract the abstract and article title for each one of the elements of
 `pub_char_list`. You can either use `sapply()` as we just did, or simply
 take advantage of vectorization of `stringr::str_extract`
 
-```{r extracting-last-bit, eval = FALSE}
+```{r extracting-last-bit, eval = TRUE}
 abstracts <- str_extract(pub_char_list, "<Abstract>(\\n|.)+</Abstract>")
 abstracts <- str_remove_all(abstracts, "</?[[:alnum:]]+>")
 abstracts <- str_replace_all(abstracts, "\\s+", " ")
@@ -222,7 +222,9 @@ Finally, put everything together into a single `data.frame` and use
 
 ```{r build-db, eval = TRUE}
 database <- data.frame(
-  "[DATA TO CONCATENATE]"
+  PumMedID = ids,
+  Title = titles,
+  Abstracts = abstracts
 )
 knitr::kable(database)
 ```
