@@ -439,7 +439,7 @@ stringr::str_extract(counts, &quot;[0-9,]+&quot;)</code></pre>
 
 query_ids</code></pre>
 <pre><code>## Response [https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&amp;term=covid19%20hawaii&amp;retmax=1000]
-##   Date: 2020-10-01 01:25
+##   Date: 2020-10-01 01:40
 ##   Status: 200
 ##   Content-Type: text/xml; charset=UTF-8
 ##   Size: 2.34 kB
@@ -712,17 +712,30 @@ table(unlist(schools_and_deps))</code></pre>
 <pre class="r"><code>pub_char_list &lt;- xml2::xml_children(publications)
 pub_char_list &lt;- sapply(pub_char_list, as.character)</code></pre>
 <p>Now, extract the abstract and article title for each one of the elements of <code>pub_char_list</code>. You can either use <code>sapply()</code> as we just did, or simply take advantage of vectorization of <code>stringr::str_extract</code></p>
-<pre class="r"><code>abstracts &lt;- str_extract(pub_char_list, &quot;[YOUR REGULAR EXPRESSION]&quot;)
-abstracts &lt;- str_remove_all(abstracts, &quot;[CLEAN ALL THE HTML TAGS]&quot;)
-abstracts &lt;- str_remove_all(abstracts, &quot;[CLEAN ALL EXTRA WHITE SPACE AND NEW LINES]&quot;)</code></pre>
+<pre class="r"><code>abstracts &lt;- str_extract(pub_char_list, &quot;&lt;Abstract&gt;(\\n|.)+&lt;/Abstract&gt;&quot;)
+abstracts &lt;- str_remove_all(abstracts, &quot;&lt;/?[[:alnum:]]+&gt;&quot;)
+abstracts &lt;- str_replace_all(abstracts, &quot;\\s+&quot;, &quot; &quot;)</code></pre>
 <p>How many of these don’t have an abstract? Now, the title</p>
-<pre class="r"><code>titles &lt;- str_extract(pub_char_list, &quot;[YOUR REGULAR EXPRESSION]&quot;)
-titles &lt;- str_remove_all(titles, &quot;[CLEAN ALL THE HTML TAGS]&quot;)</code></pre>
+<pre class="r"><code>titles &lt;- str_extract(pub_char_list, &quot;&lt;ArticleTitle&gt;(\\n|.)+&lt;/ArticleTitle&gt;&quot;)
+titles &lt;- str_remove_all(titles, &quot;&lt;/?[[:alnum:]]+&gt;&quot;)
+titles &lt;- str_replace_all(titles, &quot;\\s+&quot;,&quot; &quot;)</code></pre>
 <p>Finally, put everything together into a single <code>data.frame</code> and use <code>knitr::kable</code> to print the results</p>
 <pre class="r"><code>database &lt;- data.frame(
   &quot;[DATA TO CONCATENATE]&quot;
 )
 knitr::kable(database)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">X..DATA.TO.CONCATENATE..</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">[DATA TO CONCATENATE]</td>
+</tr>
+</tbody>
+</table>
 <p>Done! Knit the document, commit, and push.</p>
 </div>
 <div id="final-pro-tip-optional" class="section level2">
